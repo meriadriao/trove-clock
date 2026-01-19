@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><svg id="Camada_2" data-name="Camada 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Gradiente_sem_nome_26);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+    </style>
+    <linearGradient id="Gradiente_sem_nome_26" data-name="Gradiente sem nome 26" x1="9.17" y1="3.07" x2="23.77" y2="28.36" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8c8c"></stop>
+      <stop offset="1" stop-color="#ff6161"></stop>
+    </linearGradient>
+  </defs>
+  <g id="Camada_1-2" data-name="Camada 1">
+    <rect class="cls-2" width="32" height="32"></rect>
+    <path class="cls-1" d="M13.37,29.27v-3.57h-3.61v-10.71h-3.65v-5.09h3.65V2.73h4.84v7.18h10.99v5.09h-10.99v9.19h6.4v-3.57h4.88v5.13h-3.69v3.53h-8.82Z"></path>
+  </g>
+</svg></svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

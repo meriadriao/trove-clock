@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TROVE | Pomodoro Tracker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <meta name="apple-mobile-web-app-title" content="Trove" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+      @import url("style.css");
+    </style>
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <section class="menu">
+      <button id="settings-button" type="button" aria-label="Settings">
+        <img src="img/settings-button.svg" alt="Settings" />
+      </button>
+      <div class="settings-container">
+        <div class="settings-header">
+          <h2>Settings</h2>
+          <button
+            id="close-settings-btn"
+            type="button"
+            aria-label="Close settings"
+          >
+            ✕
+          </button>
+        </div>
+        <div id="settings-content" class="settings-content">
+          <!-- Night Mode Toggle -->
+          <div class="setting-group">
+            <label class="setting-label">Night Mode</label>
+            <div class="toggle-switch" id="night-mode-toggle">
+              <input type="checkbox" class="toggle-checkbox" />
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+
+          <!-- Font Selector -->
+          <div class="setting-group">
+            <label class="setting-label">Font</label>
+            <div class="font-options">
+              <button class="font-btn active" data-font="pixel">Pixel</button>
+              <button class="font-btn" data-font="sans">Sans-serif</button>
+            </div>
+          </div>
+
+          <!-- Focus Time -->
+          <div class="setting-group">
+            <label for="focus-time-input" class="setting-label"
+              >Focus Time (minutes)</label
+            >
+            <input
+              type="number"
+              id="focus-time-input"
+              class="time-input"
+              min="1"
+              max="60"
+              value="25"
+            />
+          </div>
+
+          <!-- Break Time -->
+          <div class="setting-group">
+            <label for="break-time-input" class="setting-label"
+              >Break Time (minutes)</label
+            >
+            <input
+              type="number"
+              id="break-time-input"
+              class="time-input"
+              min="1"
+              max="30"
+              value="5"
+            />
+          </div>
+        </div>
+      </div>
+      <h1 id="plans-today" aria-label="Plans for today">Plans for today?</h1>
+      <button id="edit-list-btn" type="button" aria-label="Edit task list">
+        <img src="img/edit-button.svg" alt="Edit" />
+      </button>
+    </section>
+
+    <div class="plans-container">
+      <div class="plans-header">
+        <h2>Plans for today</h2>
+        <button id="close-plans-btn" type="button" aria-label="Close plans">
+          ✕
+        </button>
+      </div>
+      <div id="todo-list" class="todo-list">
+        <input
+          type="text"
+          id="todo-input"
+          class="todo-input"
+          placeholder="Add a new task..."
+          aria-label="Add a new task"
+        />
+        <ul id="todo-items" class="todo-items"></ul>
+      </div>
+    </div>
+
+    <section class="pomodoro-container">
+      <div class="timer-wrapper">
+        <div class="timer-display">
+          <span id="minutes">25</span>
+          <span class="separator">:</span>
+          <span id="seconds">00</span>
+        </div>
+      </div>
+
+      <div class="mode-toggles">
+        <button class="mode-btn active" id="focus-mode">FOCUS</button>
+        <button class="mode-btn" id="break-mode">BREAK</button>
+        <button class="mode-btn" id="reset-mode">RESET</button>
+      </div>
+    </section>
+
+    <section class="decoration-section">
+      <div class="plants-row">
+        <div class="plant-slot" id="slot-1">
+          <img
+            src="img/p1 vase.svg"
+            alt="Empty Vase 1"
+            class="pot-empty hidden"
+          />
+          <img src="img/p1.svg" alt="Grown Plant 1" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-2">
+          <img
+            src="img/p2 vase.svg"
+            alt="Empty Vase 2"
+            class="pot-empty hidden"
+          />
+          <img src="img/p2.svg" alt="Grown Plant 2" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-3">
+          <img
+            src="img/p3 vase.svg"
+            alt="Empty Vase 3"
+            class="pot-empty hidden"
+          />
+          <img src="img/p3.svg" alt="Grown Plant 3" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-4">
+          <img
+            src="img/p4 vase.svg"
+            alt="Empty Vase 4"
+            class="pot-empty hidden"
+          />
+          <img src="img/p4.svg" alt="Grown Plant 4" class="pot-grown hidden" />
+        </div>
+
+        <div class="plant-slot" id="slot-5">
+          <img
+            src="img/p5 vase.svg"
+            alt="Empty Vase 5"
+            class="pot-empty hidden"
+          />
+          <img src="img/p5.svg" alt="Grown Plant 5" class="pot-grown hidden" />
+        </div>
+      </div>
+
+      <div class="shelf-line"></div>
+
+      <footer class="credits">Trove, a Pomodoro tracker by Meri</footer>
+    </section>
+  </body>
+</html>
