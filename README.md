@@ -5,7 +5,6 @@ A Pomodoro tracker web app, with to-do list and customizable timer features. By 
 - HTML
 - CSS
 - JavaScript
-- Aseprite
 
 ## ✨ Features
 Trove is simple to use and easy to love. Here's what you can do:
@@ -29,7 +28,7 @@ The features were defined based on market research and user interviews, seeking 
 The app's hierarchy is flat, with balanced, straightforward, and accessible navigation. It does have growth potential, but it's not a current goal.
 
 ## ✨ Running the app
-1. Open the latest deployment.
+[You can use the app here.](https://trove-clock.vercel.app/)
 
 ## 🎥 Preview
 Coming soon!
