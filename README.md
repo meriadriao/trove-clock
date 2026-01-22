@@ -14,7 +14,6 @@ Trove is simple to use and easy to love. Here's what you can do:
 - **Watch your collection grow:** as you complete focus sessions, a new plant pot will be added to your shelf!
 - **Choose your visual:** choose between light and dark mode. You can also trade the pixel font for a sans-serif font.
 - **And more to come!**
-- - Notifiers;
 - - New plants;
 - - Decor and trinkets - rewards for completed break sessions.
 
@@ -31,4 +30,6 @@ The app's hierarchy is flat, with balanced, straightforward, and accessible navi
 [You can use the app here.](https://trove-clock.vercel.app/)
 
 ## 🎥 Preview
-Coming soon!
+<video src ="https://github.com/user-attachments/assets/d9002a56-e433-4b81-b497-1400bed8990b" controls></video>
+
+
