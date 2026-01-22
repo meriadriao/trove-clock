@@ -18,6 +18,111 @@ const settingsState = {
   font: 'pixel',
 };
 
+// Local Storage Keys
+const STORAGE_KEYS = {
+  TIMER_SETTINGS: 'trove_timer_settings',
+  DISPLAY_SETTINGS: 'trove_display_settings',
+  TODO_ITEMS: 'trove_todo_items',
+  SESSIONS_COMPLETED: 'trove_sessions_completed',
+};
+
+function loadState() {
+  loadTimerSettings();
+  loadDisplaySettings();
+  loadTodoItems();
+  loadSessionsCompleted();
+}
+
+function loadTimerSettings() {
+  const saved = localStorage.getItem(STORAGE_KEYS.TIMER_SETTINGS);
+  if (saved) {
+    const data = JSON.parse(saved);
+    timerState.focusTime = data.focusTime || 25 * 60;
+    timerState.breakTime = data.breakTime || 5 * 60;
+    timerState.timeLeft = timerState.focusTime;
+    focusTimeInput.value = timerState.focusTime / 60;
+    breakTimeInput.value = timerState.breakTime / 60;
+  }
+}
+
+function saveTimerSettings() {
+  const data = {
+    focusTime: timerState.focusTime,
+    breakTime: timerState.breakTime,
+  };
+  localStorage.setItem(STORAGE_KEYS.TIMER_SETTINGS, JSON.stringify(data));
+}
+
+function loadDisplaySettings() {
+  const saved = localStorage.getItem(STORAGE_KEYS.DISPLAY_SETTINGS);
+  if (saved) {
+    const data = JSON.parse(saved);
+    
+    if (data.nightMode) {
+      settingsState.nightMode = true;
+      nightModeCheckbox.checked = true;
+      document.body.classList.add('night-mode');
+    }
+    
+    if (data.font) {
+      settingsState.font = data.font;
+      fontBtns.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`[data-font="${data.font}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        changeFontFamily({ target: activeBtn });
+      }
+    }
+  }
+}
+
+function saveDisplaySettings() {
+  const data = {
+    nightMode: settingsState.nightMode,
+    font: settingsState.font,
+  };
+  localStorage.setItem(STORAGE_KEYS.DISPLAY_SETTINGS, JSON.stringify(data));
+}
+
+function loadTodoItems() {
+  const saved = localStorage.getItem(STORAGE_KEYS.TODO_ITEMS);
+  if (saved) {
+    todoState.items = JSON.parse(saved);
+    updateTaskDisplay();
+    renderTodoItems();
+  }
+}
+
+function saveTodoItems() {
+  localStorage.setItem(STORAGE_KEYS.TODO_ITEMS, JSON.stringify(todoState.items));
+}
+
+function loadSessionsCompleted() {
+  const saved = localStorage.getItem(STORAGE_KEYS.SESSIONS_COMPLETED);
+  if (saved) {
+    timerState.sessionsCompleted = parseInt(saved, 10);
+    updatePlantDisplay();
+  }
+}
+
+function saveSessionsCompleted() {
+  localStorage.setItem(STORAGE_KEYS.SESSIONS_COMPLETED, String(timerState.sessionsCompleted));
+}
+
+function updatePlantDisplay() {
+  clearAllPlants();
+  for (let i = 0; i < timerState.sessionsCompleted; i++) {
+    const slotId = `slot-${i + 1}`;
+    const slot = document.getElementById(slotId);
+    if (slot) {
+      const grownPlant = slot.querySelector('.pot-grown');
+      if (grownPlant) {
+        grownPlant.classList.remove('hidden');
+      }
+    }
+  }
+}
+
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
 const focusBtn = document.getElementById('focus-mode');
@@ -44,6 +149,8 @@ const closePlansBtn = document.getElementById('close-plans-btn');
 
 const plantsRow = document.querySelector('.plants-row');
 
+// Load saved state on page load
+loadState();
 updateDisplay();
 
 focusBtn.addEventListener('click', switchToFocus);
@@ -115,6 +222,7 @@ function resetTimer() {
   timerState.currentMode = 'focus';
   timerState.timeLeft = timerState.focusTime;
   timerState.sessionsCompleted = 0;
+  saveSessionsCompleted();
   updateModeButtons();
   updateDisplay();
   clearAllPlants();
@@ -170,6 +278,29 @@ function updateButtonText() {
   }
 }
 
+const notifToggle = document.getElementById('notif-toggle');
+let notificationsEnabled = false;
+
+notifToggle.addEventListener('change', () => {
+  if (notifToggle.checked) {
+    if (Notification.permission === 'granted') {
+      notificationsEnabled = true;
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission().then((permissionResult) => {
+        if (permissionResult === 'granted') {
+          notificationsEnabled = true;
+          console.log('Notifications enabled');
+        } else {
+          notifToggle.checked = false;
+          notificationsEnabled = false;
+        }
+      });
+    }
+  } else {
+    notificationsEnabled = false;
+  }
+});
+
 function timerComplete() {
   pauseTimer();
   playNotification();
@@ -177,6 +308,7 @@ function timerComplete() {
   if (timerState.currentMode === 'focus') {
     growCurrentPlant();
     timerState.sessionsCompleted++;
+    saveSessionsCompleted();
     switchToBreak();
   } else {
     switchToFocus();
@@ -185,6 +317,16 @@ function timerComplete() {
 
 function playNotification() {
   console.log('Time\'s up!');
+  
+  if (notificationsEnabled && Notification.permission === 'granted') {
+    const title = timerState.currentMode === 'focus' ? 'Focus time complete!' : 'Break time over!';
+    const message = timerState.currentMode === 'focus' ? 'Great work! Time for a break.' : 'Ready to focus again?';
+    
+    new Notification(title, {
+      body: message,
+      icon: '/favicon/favicon.svg',
+    });
+  }
 }
 
 // To-do list functions
@@ -212,12 +354,14 @@ function addTodoItem(text) {
   };
   
   todoState.items.push(item);
+  saveTodoItems();
   updateTaskDisplay();
   renderTodoItems();
 }
 
 function deleteTodoItem(id) {
   todoState.items = todoState.items.filter(item => item.id !== id);
+  saveTodoItems();
   updateTaskDisplay();
   renderTodoItems();
 }
@@ -226,6 +370,7 @@ function toggleTodoItem(id) {
   const item = todoState.items.find(item => item.id === id);
   if (item) {
     item.completed = !item.completed;
+    saveTodoItems();
     updateTaskDisplay();
     renderTodoItems();
   }
@@ -329,6 +474,7 @@ function toggleNightMode(e) {
     document.body.classList.remove('night-mode');
   }
   
+  saveDisplaySettings();
   console.log('Night Mode:', settingsState.nightMode);
 }
 
@@ -351,12 +497,14 @@ function changeFontFamily(e) {
   if (fontVar) {
     document.body.style.fontFamily = `var(${fontVar})`;
     settingsState.font = fontType;
+    saveDisplaySettings();
   }
 }
 
 function updateFocusTime(e) {
   const newFocusTime = parseInt(e.target.value) || 25;
   timerState.focusTime = newFocusTime * 60;
+  saveTimerSettings();
   
   // Update display if in focus mode and timer is not running
   if (timerState.currentMode === 'focus' && !timerState.isRunning) {
@@ -368,6 +516,7 @@ function updateFocusTime(e) {
 function updateBreakTime(e) {
   const newBreakTime = parseInt(e.target.value) || 5;
   timerState.breakTime = newBreakTime * 60;
+  saveTimerSettings();
   
   // Update display if in break mode and timer is not running
   if (timerState.currentMode === 'break' && !timerState.isRunning) {
